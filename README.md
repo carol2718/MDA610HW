@@ -1,7 +1,7 @@
 
 
-#Homework 3
-##List of commonly used git commands
+# Homework 3
+## List of commonly used git commands
 
 
 1. echo

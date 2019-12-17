@@ -1,0 +1,158 @@
+#What are the names of all the languages in the database? Sort the languages alphabetically.
+mysql> SELECT distinct (name)
+    -> FROM language
+    -> ORDER BY name ASC;
++----------+
+| name     |
++----------+
+| English  |
+| French   |
+| German   |
+| Italian  |
+| Japanese |
+| Mandarin |
++----------+
+
+
+Return the full names (first and last) of all actors with "BER" in their last name. Sort the returned names by their first name. (Hint: use the CONCAT() function to add two or more strings together.
+
+mysql> SELECT CONCAT(first_name, ' ', last_name)
+    -> AS NAME
+    -> FROM actor
+    -> WHERE last_name LIKE '%BER%'
+    -> ORDER BY first_name ASC;
++-------------------+
+| NAME              |
++-------------------+
+| CHRISTOPHER BERRY |
+| DARYL WAHLBERG    |
+| HENRY BERRY       |
+| KARL BERRY        |
+| LIZA BERGMAN      |
+| NICK WAHLBERG     |
+| PARKER GOLDBERG   |
+| VIVIEN BERGEN     |
++-------------------+
+
+iii. How many last names are not repeated in the actor table?
+
+mysql> SELECT COUNT(DISTINCT last_name) AS "Not Repeated lastnames"
+    -> FROM actor;
++------------------------+
+| Not Repeated lastnames |
++------------------------+
+|                    121 |
++------------------------+
+1 row in set (0.00 sec)
+
+iv. # films involve a "Crocodile" and a "Shark"
+mysql> SELECT COUNT(description)
+    -> FROM film
+    -> WHERE description LIKE '%Crocodrile%'
+    -> OR description LIKE '%Shark%';
++--------------------+
+| COUNT(description) |
++--------------------+
+|                114 |
++--------------------+
+1 row in set (0.08 sec)
+
+v. Return the full names of the actors who played in a film involving a "Crocodile" and a "Shark", along with the release year of the movie, sorted by the actors' last names.
+ SELECT concat(first_name, ' ', last_name) AS Name, release_year
+    -> FROM film a JOIN actor b JOIN film_actor c
+    -> ON a.film_id=c.film_id
+    -> AND b.actor_id=c.actor_id
+    -> WHERE description LIKE '%Crocodile%'
+    -> OR description LIKE '%Shark%'
+    -> ORDER BY last_name ASC;
+
+
+  vi. Find all the film categories in which there are between 40 and 60 films. Return the names of these categories and the number of films in each category, sorted in descending order of the number of films.
+  mysql> SELECT count(*), name
+    -> FROM film_category a JOIN category b
+    -> ON a.category_id=b.category_id
+    -> GROUP BY b.category_id
+    -> HAVING 40<=count(*)<=60
+    -> ORDER BY count(*) DESC;
++----------+-------------+
+| count(*) | name        |
++----------+-------------+
+|       74 | Sports      |
+|       73 | Foreign     |
+|       69 | Family      |
+|       68 | Documentary |
+|       66 | Animation   |
+|       64 | Action      |
+|       63 | New         |
+|       62 | Drama       |
+|       61 | Games       |
+|       61 | Sci-Fi      |
+|       60 | Children    |
+|       58 | Comedy      |
+|       57 | Classics    |
+|       57 | Travel      |
+|       56 | Horror      |
+|       51 | Music       |
++----------+-------------+
+
+vii. Return the full names of all the actors whose first name is the same as the first name of the actor with ID 24.
+ SELECT concat(first_name, ' ', last_name) AS Name
+    -> FROM actor
+    -> WHERE first_name=(SELECT first_name
+    -> FROM actor
+    -> WHERE actor_id=24);
++-------------------+
+| Name              |
++-------------------+
+| CAMERON STREEP    |
+| CAMERON WRAY      |
+| CAMERON ZELLWEGER |
++-------------------+
+
+viii. Return the full name of the actor who has appeared in the most films.
+ SELECT concat(first_name, ' ', last_name) AS Name,
+    -> count(a.actor_id)
+    -> FROM film_actor a JOIN actor b
+    -> ON a.actor_id=b.actor_id
+    -> GROUP BY a.actor_id
+    -> ORDER BY count(a.actor_id) DESC
+    -> LIMIT 1;
++----------------+-------------------+
+| Name           | count(a.actor_id) |
++----------------+-------------------+
+| GINA DEGENERES |                42 |
++----------------+-------------------+
+1 row in set (0.07 sec)
+
+ix. Return the film categories with an average movie length longer than the average length of all movies in the sakila database
+ SELECT name, AVG(length)
+    -> FROM film a JOIN category b JOIN film_category c
+    -> ON a.film_id=c.film_id
+    -> AND b.category_id=c.category_id
+    -> GROUP BY name
+    -> HAVING AVG(length)>(SELECT AVG(length)
+    -> FROM film);
++---------+-------------+
+| name    | AVG(length) |
++---------+-------------+
+| Comedy  |    115.8276 |
+| Drama   |    120.8387 |
+| Foreign |    121.6986 |
+| Games   |    127.8361 |
+| Sports  |    128.2027 |
++---------+-------------+
+
+x. Return the total sales of each store.
+mysql> SELECT total_sales
+    -> FROM sales_by_store;
++-------------+
+| total_sales |
++-------------+
+|    33726.77 |
+|    33679.79 |
++-------------+
+
+
+
+ 
+
